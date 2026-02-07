@@ -527,3 +527,160 @@ $ tm update erdos-sbx --status "Completed fixing mathematical flaws in Lean theo
 3. **Universal Quantification**: The theorem now correctly applies to all $a, b, n$ satisfying the divisibility condition for primes $p > P$.
 
 Additionally, `PROOF.md` was updated to align its natural language proof with the refined formal statement, including a more rigorous treatment of the small $n$ cases and the choice of prime $q$ depending on $n$.
+[2026-02-07T05:51:51.618Z] ✅ Closed task erdos-sbx
+
+[2026-02-07T05:51:51.618Z] 🔄 Checking git status...
+[2026-02-07T05:51:51.630Z] 📝 Committing changes...
+[2026-02-07T05:51:51.652Z] ℹ️  No remote configured, skipping push.
+[2026-02-07T05:51:52.655Z] 
+================================================================================
+[2026-02-07T05:51:52.655Z] 📌 Processing task: erdos-lnq - Phase 4.1: Prove Legendre formula lemma in Lean
+[2026-02-07T05:51:52.655Z]    Role: execute | Priority: 1 | Size: medium
+[2026-02-07T05:51:52.655Z] ================================================================================
+
+[2026-02-07T05:51:52.658Z] ✓ Claimed task erdos-lnq
+
+[2026-02-07T05:51:52.658Z] 🤖 Using agent: execute with models: anthropic/claude-opus-4-6, anthropic/claude-opus-4-5, google-antigravity/gemini-3-pro
+
+[2026-02-07T05:51:52.658Z] 💭 Starting pi agent session with model: anthropic/claude-opus-4-6...
+[2026-02-07T05:51:55.583Z] 
+$ cat Erdos/Basic.lean
+[2026-02-07T05:51:57.217Z] 
+$ wc -l Erdos/Basic.lean
+[2026-02-07T05:51:58.761Z] 
+🛠️  Executing tool: read...
+[2026-02-07T05:52:01.739Z] 
+$ ls Erdos/
+[2026-02-07T05:52:03.725Z] 
+$ grep -r "legendre_upper_bound" .
+[2026-02-07T05:52:27.818Z] 
+$ grep -r "sub_one_mul_padicValNat_factorial" .lake/packages/mathlib/Mathlib/
+[2026-02-07T05:52:29.841Z] 
+$ grep -A 5 "theorem sub_one_mul_padicValNat_factorial" .lake/packages/mathlib/Mathlib/NumberTheory/Padics/PadicVal/Basic.lean
+[2026-02-07T05:52:31.753Z] 
+$ tm update erdos-lnq --status "Adding Legendre formula lemmas and bounds to Erdos/Basic.lean"
+[2026-02-07T05:52:35.319Z] 
+$ head -n 20 .lake/packages/mathlib/Mathlib/NumberTheory/Padics/PadicVal/Basic.lean
+[2026-02-07T05:52:41.823Z] 
+🛠️  Executing tool: edit...
+[2026-02-07T05:52:44.119Z] 
+$ grep "sum" .lake/packages/mathlib/Mathlib/Data/Nat/Digits.lean | grep "le"
+[2026-02-07T05:52:46.003Z] 
+$ find .lake/packages/mathlib/Mathlib/Data/Nat -name "*Digits*"
+[2026-02-07T05:52:47.415Z] 
+$ ls .lake/packages/mathlib/Mathlib/Data/Nat/Digits
+[2026-02-07T05:52:49.235Z] 
+$ grep "sum" .lake/packages/mathlib/Mathlib/Data/Nat/Digits/Lemmas.lean | grep "le"
+[2026-02-07T05:52:52.806Z] 
+$ grep -r "digits_len" .lake/packages/mathlib/Mathlib/Data/Nat/Digits/
+[2026-02-07T05:53:09.578Z] 
+$ grep -r "sum_le" .lake/packages/mathlib/Mathlib/Data/List/
+[2026-02-07T05:53:11.361Z] 
+$ grep -r "sum_le" .lake/packages/mathlib/Mathlib/Data/Nat/
+[2026-02-07T05:53:18.596Z] 
+🛠️  Executing tool: write...
+[2026-02-07T05:53:29.547Z] 
+$ lake env lean test_legendre.lean
+[2026-02-07T05:53:36.906Z] 
+$ ls .lake/packages/mathlib/Mathlib/Data/Nat/Digits.lean
+[2026-02-07T05:53:39.004Z] 
+$ ls .lake/packages/mathlib/Mathlib/Data/Nat/Log.lean
+[2026-02-07T05:53:53.621Z] 
+🛠️  Executing tool: write...
+[2026-02-07T05:53:55.772Z] 
+$ lake build
+[2026-02-07T05:54:06.854Z] 
+$ grep -r "theorem lt_div_iff" .lake/packages/mathlib/Mathlib/Algebra/Order/Field/Basic.lean
+[2026-02-07T05:54:20.243Z] 
+🛠️  Executing tool: write...
+[2026-02-07T05:54:21.916Z] 
+$ lake build
+[2026-02-07T05:54:30.096Z] 
+$ grep -r "lt_div_iff" .lake/packages/mathlib/Mathlib/Algebra/Order/Field/Basic.lean | head -n 20
+[2026-02-07T05:54:33.423Z] 
+$ grep -r "theorem lt_div_iff₀" .lake/packages/mathlib/Mathlib/Algebra/Order/Group/Defs.lean
+[2026-02-07T05:54:36.301Z] 
+$ grep -r "theorem lt_div_iff" .lake/packages/mathlib/Mathlib | grep -v "of_neg" | head -n 5
+[2026-02-07T05:54:41.006Z] 
+$ grep -r "theorem lt_div_iff" .lake/packages/mathlib/Mathlib/Algebra/Order/Field/Defs.lean
+[2026-02-07T05:54:44.003Z] 
+$ grep -r "lt_div_iff₀" .lake/packages/mathlib/Mathlib | head -n 5
+[2026-02-07T05:54:54.172Z] 
+🛠️  Executing tool: write...
+[2026-02-07T05:54:55.865Z] 
+$ lake build
+[2026-02-07T05:55:05.000Z] 
+$ grep -r "div_le_iff₀" .lake/packages/mathlib/Mathlib/Algebra/Order/GroupWithZero/Unbundled/Basic.lean
+[2026-02-07T05:55:30.100Z] 
+🛠️  Executing tool: write...
+[2026-02-07T05:55:31.928Z] 
+$ lake build
+[2026-02-07T05:55:54.491Z] 
+🛠️  Executing tool: write...
+[2026-02-07T05:55:56.356Z] 
+$ lake build
+[2026-02-07T05:56:07.321Z] 
+$ grep -B 10 "theorem sub_one_mul_padicValNat_factorial_lt_of_ne_zero" .lake/packages/mathlib/Mathlib/NumberTheory/Padics/PadicVal/Basic.lean
+[2026-02-07T05:56:24.473Z] 
+🛠️  Executing tool: write...
+[2026-02-07T05:56:26.707Z] 
+$ lake build
+[2026-02-07T05:56:46.738Z] 
+🛠️  Executing tool: write...
+[2026-02-07T05:56:48.581Z] 
+$ lake build
+[2026-02-07T05:56:57.726Z] 
+$ grep -r "theorem mem_cons_self" .lake/packages/mathlib/Mathlib/Data/List/Basic.lean
+[2026-02-07T05:57:05.412Z] 
+$ grep -r "sum_le_card_nsmul" .lake/packages/mathlib/Mathlib/Data/List/
+[2026-02-07T05:57:07.423Z] 
+$ grep -r "sum_le_length" .lake/packages/mathlib/Mathlib/Data/List/
+[2026-02-07T05:57:19.497Z] 
+🛠️  Executing tool: write...
+[2026-02-07T05:57:21.533Z] 
+$ lake build
+[2026-02-07T05:57:41.880Z] 
+🛠️  Executing tool: write...
+[2026-02-07T05:57:43.670Z] 
+$ lake build
+[2026-02-07T05:58:03.567Z] 
+🛠️  Executing tool: write...
+[2026-02-07T05:58:05.228Z] 
+$ lake build
+[2026-02-07T05:58:24.848Z] 
+🛠️  Executing tool: write...
+[2026-02-07T05:58:26.519Z] 
+$ lake build
+[2026-02-07T05:58:38.580Z] 
+$ grep -rn "sorry" Erdos/Basic.lean
+[2026-02-07T05:58:41.651Z] 
+$ grep -n "lemma legendre" Erdos/Basic.lean
+[2026-02-07T05:58:43.861Z] 
+$ rm test_legendre.lean
+[2026-02-07T05:58:47.314Z] 
+🛠️  Executing tool: read...
+[2026-02-07T05:58:51.283Z] 
+
+📝 Agent response complete.
+
+[2026-02-07T05:58:51.283Z] 📄 Log saved to .tm/logs/worker-erdos-lnq.md
+[2026-02-07T05:58:51.284Z] 🧪 Running test command: lake build
+[2026-02-07T05:58:53.208Z] ✅ Test command passed
+
+[2026-02-07T05:58:53.208Z] 
+📊 Task erdos-lnq completed:
+[2026-02-07T05:58:53.208Z]    Summary: Proven Legendre's formula bounds in Erdos/Basic.lean and verified compilation with lake build.
+[2026-02-07T05:58:53.208Z]    Details: The following lemmas were implemented and proven in `Erdos/Basic.lean`:
+
+1. `legendre_upper_bound`: Proves that $v_p(n!) < n / (p - 1)$ for $n > 0$. The proof uses Mathlib's `sub_one_mul_padicValNat_factorial_lt_of_ne_zero` and correctly handles the conversion between natural numbers and real numbers.
+
+2. `legendre_lower_bound`: Proves that $\frac{n - p(\log_p n + 1)}{p - 1} \le v_p(n!)$ for $n > 0$. The proof uses Legendre's identity $(p-1)v_p(n!) = n - s_p(n)$ and the fact that the digit sum $s_p(n)$ is bounded by $(p-1)(\log_p n + 1)$.
+
+### Key implementation details:
+- Added necessary imports: `Mathlib.NumberTheory.Padics.PadicVal.Basic`, `Mathlib.Data.Nat.Log`, `Mathlib.Data.Nat.Digits.Defs`, `Mathlib.Data.Nat.Digits.Lemmas`, `Mathlib.Tactic`, and `Mathlib.Algebra.Order.Field.Basic`.
+- Used `div_le_iff₀` and `lt_div_iff₀` to handle division in ordered groups with zero (Fields).
+- Implemented a manual induction proof for the digit sum bound $s_p(n) \le (p-1)L$.
+- Verified with `lake build` that the code compiles successfully.
+- Confirmed that no `sorry` statements remain in the Legendre lemmas.
+
+Confidence level: HIGH.

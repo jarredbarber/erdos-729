@@ -349,3 +349,68 @@ $ wc -l PROOF.md
 📊 Task erdos-csg completed:
 [2026-02-07T05:24:28.224Z]    Summary: Created PROOF.md with complete rigorous natural language proof of the Erdős conjecture
 [2026-02-07T05:24:28.224Z]    Details: The proof demonstrates that if a!b! divides n! for all primes p > P (ignoring small primes ≤ P), then a+b ≤ n + O(log n). The key insight is choosing a prime q ≈ log n that is larger than P, then applying Legendre's formula to show the constraint from this single large prime is sufficient. The proof is structured with clear definitions, 3 preliminary lemmas, a formal theorem statement, a 5-step proof, and concludes with confidence level (HIGH) and assumptions. All mathematical notation uses Glint-compatible LaTeX formatting. Total: 234 lines.
+[2026-02-07T05:35:56.611Z] ✓ Repository reset to HEAD
+
+[2026-02-07T05:35:56.611Z] 
+📊 Task erdos-lgm failed:
+[2026-02-07T05:35:56.611Z]    Summary: Cannot complete proof without Legendre formula bounds
+[2026-02-07T05:35:56.611Z]    Details: ANALYSIS:
+
+1. **What I proved**: Using Bertrand's postulate alone, I can show a + b ≤ 4n. Specifically:
+   - If min(a,b) > 2n, there exists a prime p with n < p ≤ 2n that violates the divisibility condition
+   - Therefore min(a,b) ≤ 2n and similarly max(a,b) ≤ 2n
+   - This gives a + b ≤ 4n
+
+2. **Why this is insufficient**: The theorem requires a + b ≤ n + C*log(n+1) for a universal constant C. The bound a + b ≤ 4n requires C ≥ 3n/log(n+1), which grows without bound, so no fixed C works.
+
+3. **What's needed**: To get the O(log n) bound, I need explicit bounds on Legendre's formula:
+   - Upper bound: v_p(m!) < m/(p-1)
+   - Lower bound: v_p(m!) ≥ m/(p-1) - O(log m)
+   
+   With these, for a large enough prime p > max(P, a, b, n), the divisibility condition v_p(a!) + v_p(b!) ≤ v_p(n!) gives:
+   (a+b)/(p-1) - O(log stuff) ≤ n/(p-1) + O(log n)
+   
+   Choosing p ≈ Θ(max(a,b,n)) carefully makes the error terms O(log n), yielding a + b ≤ n + O(log n).
+
+4. **Dependency issue**: The task description says 'Using Legendre's formula (from task erdos-lnq)', but erdos-lnq is still in progress. These two tasks should either:
+   - Have erdos-lgm depend on erdos-lnq (sequential), or
+   - Have erdos-lgm prove its own Legendre bounds (requires significant additional work)
+
+5. **Current code state**: Erdos/Basic.lean has helper lemmas using Bertrand's postulate and the main theorem with partial proof + sorries for the Legendre bounds.
+
+RECOMMENDATION: Make erdos-lgm explicitly depend on erdos-lnq, or assign proving Legendre bounds as a separate subtask.
+[2026-02-07T05:35:56.615Z] ❌ Task erdos-lgm failed
+
+[2026-02-07T05:35:57.617Z] ⏳ No tasks available. Waiting for new tasks (polling every 5 seconds)...
+[2026-02-07T05:46:58.307Z] 
+================================================================================
+[2026-02-07T05:46:58.307Z] 📌 Processing task: erdos-d2f - Phase 2: Formalize theorem statement in Lean
+[2026-02-07T05:46:58.307Z]    Role: execute | Priority: 1 | Size: medium
+[2026-02-07T05:46:58.307Z] ================================================================================
+
+[2026-02-07T05:46:58.309Z] ✓ Claimed task erdos-d2f
+
+[2026-02-07T05:46:58.309Z] 🤖 Using agent: execute with models: anthropic/claude-opus-4-6, anthropic/claude-opus-4-5, google-antigravity/gemini-3-pro
+
+[2026-02-07T05:46:58.310Z] 💭 Starting pi agent session with model: anthropic/claude-opus-4-6...
+[2026-02-07T05:46:58.358Z] 🔄 Resuming session: 8bc06f00-8bf5-4cba-bd88-7051af9a9a16
+[2026-02-07T05:47:04.659Z] 
+$ tm update erdos-d2f --status "Verifying task completion and final state"
+[2026-02-07T05:47:05.784Z] 
+$ cd /home/jarred/code/erdos && lake build 2>&1 | tail -10
+[2026-02-07T05:47:07.325Z] 
+🛠️  Executing tool: read...
+[2026-02-07T05:47:13.393Z] 
+$ grep -n "sorry" Erdos/Basic.lean
+[2026-02-07T05:47:36.179Z] 
+
+📝 Agent response complete.
+
+[2026-02-07T05:47:36.179Z] 📄 Log saved to .tm/logs/worker-erdos-d2f.md
+[2026-02-07T05:47:36.180Z] 🧪 Running test command: lake build
+[2026-02-07T05:47:38.057Z] ✅ Test command passed
+
+[2026-02-07T05:47:38.057Z] 
+📊 Task erdos-d2f completed:
+[2026-02-07T05:47:38.057Z]    Summary: Successfully formalized the Erdős factorial divisibility theorem in Lean 4 - theorem statement compiles and matches problem specification exactly
+[2026-02-07T05:47:38.057Z]    Details: [object Object]

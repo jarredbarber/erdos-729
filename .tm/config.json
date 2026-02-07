@@ -4,5 +4,9 @@
     "priority": 2,
     "size": "medium",
     "type": "task"
-  }
+  },
+  "context_files": [
+    "PROBLEM.md",
+    "CLAUDE.md"
+  ]
 }

@@ -34,17 +34,17 @@ def IgnoresSmallPrimes (a b n P : ℕ) : Prop :=
 **Main Theorem (Erdős Factorial Divisibility with Small Primes Ignored)**
 
 If a!b! divides n! when ignoring small primes (i.e., the divisibility condition holds
-for all sufficiently large primes), then a + b ≤ n + O(log n).
+for all primes larger than P), then a + b ≤ n + O(log n).
 
-More precisely: There exist constants C > 0 and P₀ such that for all a, b, n, P
-satisfying P ≥ P₀ and the divisibility condition for primes > P, we have
-a + b ≤ n + C * log(n + 1).
+More precisely: For every natural number P, there exists a constant C > 0 
+such that for all a, b, n satisfying the divisibility condition for all primes p > P, 
+we have a + b ≤ n + C * log(n + 2).
 
-Note: We use log(n + 1) instead of log(n) to avoid issues when n = 0.
+Note: We use log(n + 2) to ensure the logarithm is always positive and 
+to provide a sufficient bound for small n.
 -/
-theorem erdos_factorial_ignoring_small_primes :
-    ∃ (C : ℝ) (P₀ : ℕ), C > 0 ∧ ∀ (a b n P : ℕ), 
-      P ≥ P₀ → 
+theorem erdos_factorial_ignoring_small_primes (P : ℕ) :
+    ∃ (C : ℝ), C > 0 ∧ ∀ (a b n : ℕ), 
       IgnoresSmallPrimes a b n P → 
-      ((a + b : ℕ) : ℝ) ≤ (n : ℝ) + C * Real.log ((n : ℝ) + 1) := by
+      ((a + b : ℕ) : ℝ) ≤ (n : ℝ) + C * Real.log ((n : ℝ) + 2) := by
   sorry

@@ -105,106 +105,65 @@ $$
 
 ## Main Theorem
 
-**Theorem**: Let $ P \geq 2 $ be a fixed threshold. Suppose that for all primes $ p > P $:
+**Theorem**: Let $ P \in \mathbb{N} $ be a fixed threshold. There exists a constant $ C > 0 $ (depending on $ P $) such that for all $ a, b, n \in \mathbb{N} $, if for all primes $ p > P $:
 
 $$
 v_p(a!) + v_p(b!) \leq v_p(n!)
 $$
 
-Then there exists a constant $ C $ (depending on $ P $) such that:
+then:
 
 $$
-a + b \leq n + C \log n
+a + b \leq n + C \log(n + 2)
 $$
-
-for all sufficiently large $ n $.
 
 ---
 
 ## Proof of Main Theorem
 
-### Step 1: Choose a Large Prime
-Let $ q $ be a prime with $ P < q \leq 2P $. By Bertrand's postulate, such a prime exists.
+### Step 1: Choose a Prime Dependent on n
+For a fixed $ P $, we want to show that $ a + b - n $ is bounded by $ O(\log n) $.
 
-Since $ q > P $, the divisibility constraint holds for $ q $:
+If $ n $ is large enough such that $ \log n > P $, by Bertrand's postulate (or the prime number theorem), there exists a prime $ q $ such that:
+$$ \max(P, \log n) < q < 2 \max(P, \log n) $$
 
-$$
-v_q(a!) + v_q(b!) \leq v_q(n!)
-$$
+For such a $ q $, the divisibility constraint holds because $ q > P $:
+$$ v_q(a!) + v_q(b!) \leq v_q(n!) $$
 
 ### Step 2: Apply Legendre's Formula
 Using Lemma 1 with $ p = q $:
-
-$$
-v_q(a!) > \frac{a}{q-1} - 1, \quad v_q(b!) > \frac{b}{q-1} - 1, \quad v_q(n!) < \frac{n}{q-1}
-$$
+$$ v_q(a!) > \frac{a}{q-1} - 1, \quad v_q(b!) > \frac{b}{q-1} - 1, \quad v_q(n!) < \frac{n}{q-1} $$
 
 ### Step 3: Combine the Inequalities
 From the divisibility constraint:
-
-$$
-\frac{a}{q-1} - 1 + \frac{b}{q-1} - 1 < v_q(a!) + v_q(b!) \leq v_q(n!) < \frac{n}{q-1}
-$$
+$$ \frac{a}{q-1} - 1 + \frac{b}{q-1} - 1 < v_q(a!) + v_q(b!) \leq v_q(n!) < \frac{n}{q-1} $$
 
 Simplifying:
+$$ \frac{a + b}{q-1} - 2 < \frac{n}{q-1} $$
+$$ a + b < n + 2(q-1) $$
 
-$$
-\frac{a + b}{q-1} - 2 < \frac{n}{q-1}
-$$
+### Step 4: Bound in Terms of log n
+Since $ q < 2 \log n $ (for large $ n $), we have:
+$$ a + b < n + 4 \log n $$
 
-Multiplying both sides by $ q - 1 > 0 $:
+This shows $ a + b \leq n + C \log(n+2) $ for large $ n $.
 
-$$
-a + b < n + 2(q-1)
-$$
+### Step 5: Handle Small n
+If $ n $ is small, we must ensure $ a $ and $ b $ are also bounded.
+If $ v_p(a!) + v_p(b!) \leq v_p(n!) $ for all $ p > P $, then for any prime $ q > P $, we must have $ v_q(a!) \leq v_q(n!) $.
+If $ n $ is fixed, $ v_q(n!) $ is non-zero for only finitely many primes $ q $.
+Specifically, if $ a \geq q $ for some prime $ q > \max(P, n) $, then $ v_q(a!) \geq 1 $ but $ v_q(n!) = 0 $, which contradicts the condition.
+Thus, $ a $ and $ b $ must be less than the smallest prime $ q > \max(P, n) $.
+By Bertrand's postulate, such a prime exists and is at most $ 2 \max(P, n) + 2 $.
+Thus $ a $ and $ b $ are bounded by $ 2 \max(P, n) + 2 $.
+For any fixed $ P $, this means that for each $ n $, $ a+b $ is bounded.
+Since there are only finitely many $ n $ below any threshold, we can choose $ C $ large enough to satisfy the inequality for all small $ n $.
 
-### Step 4: Bound in Terms of $ \log n $
-Since $ q \leq 2P $ (where $ P $ is fixed), we have:
+Specifically, for $ n=0 $, $ a, b < p_{next}(P) \le 2P+2 $, so $ a+b \le 4P+4 $.
+Choosing $ C \geq (4P+4)/\log(2) $ satisfies the bound for $ n=0 $.
 
-$$
-a + b < n + 2(2P - 1) = n + 4P - 2
-$$
-
-This is a constant bound, but we want $ O(\log n) $. Let's refine the argument.
-
-**Refinement**: Instead of choosing a fixed $ q $, we choose $ q $ to be the smallest prime greater than $ \max(P, \log n) $.
-
-By the prime number theorem (or Bertrand's postulate), there exists a prime $ q $ with:
-
-$$
-\log n < q < 2 \log n
-$$
-
-for $ n $ sufficiently large.
-
-Assuming $ P < \log n $ (which holds for large $ n $ if $ P $ is fixed), we have $ q > P $, so the constraint applies.
-
-Using the same argument:
-
-$$
-a + b < n + 2(q - 1) < n + 2(2\log n - 1) = n + 4\log n - 2
-$$
-
-Therefore:
-
-$$
-a + b = n + O(\log n)
-$$
-
-### Step 5: Handle Small $ n $
-For $ n \leq N_0 $ (where $ N_0 $ is chosen so $ \log N_0 > P $), we note that $ a, b \leq n $ implies $ a + b \leq 2n $. The bound $ a + b \leq n + C\log n $ holds trivially for $ C \geq n / \log n $, which is bounded for $ n \geq 2 $.
-
-Alternatively, we can take $ C $ large enough to handle the finitely many small cases.
-
----
-
-## Conclusion
-
-We have shown that if $ a! \cdot b! $ divides $ n! $ for all primes $ p > P $ (ignoring small primes $ \leq P $), then:
-
-$$
-a + b \leq n + O(\log n)
-$$
+### Step 6: Conclusion
+By combining the large $ n $ and small $ n $ cases, there exists a constant $ C $ depending on $ P $ such that $ a + b \leq n + C \log(n + 2) $ for all $ a, b, n $.
 
 The key insight is that **a single large prime** (specifically, a prime around $ \log n $) is sufficient to enforce the Erdős bound. The original Erdős proof used $ p = 2 $, but we can replace it with any prime $ q > P $ that is still $ O(\log n) $ in size.
 

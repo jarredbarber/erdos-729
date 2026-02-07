@@ -471,3 +471,59 @@ Please revise the theorem statement to be mathematically sound and faithful to t
 3. **Asymptotic Interpretation**: The problem specifies $a+b \le n + O(\log n)$. The current Lean statement interprets this as a global bound without a constant term $D$ or an 'eventually' clause ($n \ge n_0$).
 
 I have created a priority 0 task (`erdos-sbx`) for the Advisor to fix these flaws before proof implementation begins.
+[2026-02-07T05:50:17.308Z] ✅ Closed task erdos-vxn
+
+[2026-02-07T05:50:17.308Z] 🔄 Checking git status...
+[2026-02-07T05:50:17.319Z] 📝 Committing changes...
+[2026-02-07T05:50:17.340Z] ℹ️  No remote configured, skipping push.
+[2026-02-07T05:50:18.342Z] 
+================================================================================
+[2026-02-07T05:50:18.342Z] 📌 Processing task: erdos-sbx - Advisor: Fix mathematical flaws in Lean theorem statement
+[2026-02-07T05:50:18.342Z]    Role: advisor | Priority: 0 | Size: medium
+[2026-02-07T05:50:18.342Z] ================================================================================
+
+[2026-02-07T05:50:18.345Z] ✓ Claimed task erdos-sbx
+
+[2026-02-07T05:50:18.346Z] 🤖 Using agent: advisor with models: anthropic/claude-opus-4-6, anthropic/claude-opus-4-5, google-antigravity/gemini-3-pro
+
+[2026-02-07T05:50:18.346Z] 💭 Starting pi agent session with model: anthropic/claude-opus-4-6...
+[2026-02-07T05:50:20.582Z] 
+🛠️  Executing tool: read...
+[2026-02-07T05:50:47.789Z] 
+$ tm update erdos-sbx --status "Analyzing current theorem statement and preparing fix for mathematical flaws."
+[2026-02-07T05:50:56.656Z] 
+🛠️  Executing tool: edit...
+[2026-02-07T05:50:58.422Z] 
+$ lake build
+[2026-02-07T05:51:07.277Z] 
+$ ls -R
+[2026-02-07T05:51:08.916Z] 
+🛠️  Executing tool: read...
+[2026-02-07T05:51:15.127Z] 
+🛠️  Executing tool: read...
+[2026-02-07T05:51:20.449Z] 
+$ tm list
+[2026-02-07T05:51:23.852Z] 
+$ tm show erdos-sbx
+[2026-02-07T05:51:37.065Z] 
+🛠️  Executing tool: edit...
+[2026-02-07T05:51:41.101Z] 
+🛠️  Executing tool: read...
+[2026-02-07T05:51:42.964Z] 
+$ lake build
+[2026-02-07T05:51:47.382Z] 
+$ tm update erdos-sbx --status "Completed fixing mathematical flaws in Lean theorem statement and natural language proof."
+[2026-02-07T05:51:51.615Z] 
+
+📝 Agent response complete.
+
+[2026-02-07T05:51:51.615Z] 📄 Log saved to .tm/logs/worker-erdos-sbx.md
+[2026-02-07T05:51:51.615Z] 
+📊 Task erdos-sbx completed:
+[2026-02-07T05:51:51.615Z]    Summary: Fixed mathematical flaws in the Lean theorem statement and updated the natural language proof.
+[2026-02-07T05:51:51.615Z]    Details: The theorem statement in `Erdos/Basic.lean` was revised to address three key issues:
+1. **Uniformity of C**: Changed quantification to `∀ P, ∃ C`, correctly showing that the constant $C$ depends on the set of ignored primes $P$.
+2. **Small n handling**: Replaced `log(n+1)` with `log(n+2)` and added a positive constant requirement for $C$ to ensure the bound $a+b \leq n + C \log(n+2)$ holds for all $n$, including $n=0$.
+3. **Universal Quantification**: The theorem now correctly applies to all $a, b, n$ satisfying the divisibility condition for primes $p > P$.
+
+Additionally, `PROOF.md` was updated to align its natural language proof with the refined formal statement, including a more rigorous treatment of the small $n$ cases and the choice of prime $q$ depending on $n$.

@@ -132,7 +132,7 @@ Both proofs establish that divisibility on large primes alone suffices for the E
 - **Incomplete proof:** Main theorem has a `sorry` (completion claimed to be "mathematically sound but implementation details preventing compilation")
 - **Complex constant management:** Many nested constants with intricate dependencies; harder to verify correctness
 - **Deep formalization:** Many auxiliary lemmas; more surface area for bugs
-- **Implementation challenges:** Different AI model (Gemini vs Claude) produced a different approach; reflects model-specific strategic choices rather than unique mathematical insight
+- **Different approach from Claude:** Gemini generated a more structured proof with explicit case analysis and auxiliary lemmas
 
 #### Position in the Spectrum
 
@@ -351,7 +351,7 @@ The GPT-5.2 proof is **"deep" in structure**, using:
 
 This reveals the *real reason* the bound holds: the base-$p$ representations of $m$ in the interval $[M, 2M]$ are "generic" (digits are roughly uniform), and generic representations force sufficient carries to satisfy the divisibility constraints. GPT-5.2's approach is the most mathematically sophisticated but also the most complex—and not yet formalized in a proof assistant.
 
-**Key insight:** Deeper AI models find richer mathematical structure; richer structure is harder to formalize. The problem is **inherently combinatorial** on base-digit patterns.
+**Key insight:** The GPT-5.2 proof reveals that the problem has **combinatorial structure** in base-digit patterns. This particular proof strategy is more complex to formalize than the prime-based approaches.
 
 ---
 
@@ -433,7 +433,7 @@ Three **independent AI attempts** at the same problem, generating radically diff
 - **Formalization:** Binomial divisibility reduction; probabilistic existence argument
 - **Result:** ✓ Published; ready for formal verification
 
-**The fundamental observation:** Given the same problem, different AI models independently generated three mathematically distinct proofs with different strategic decompositions, suggesting proof strategy is not uniquely determined by problem structure but by model architecture and reasoning patterns.
+**The fundamental observation:** Given the same problem, different AI models independently generated three mathematically distinct proofs with different strategic decompositions.
 
 **What These Three Independent Proofs Reveal About AI-Generated Mathematics:**
 
@@ -446,12 +446,12 @@ Three **independent AI attempts** at the same problem, generating radically diff
   - Same mathematical content (Legendre's formula, digit sums, prime selection)
   - Different strategic choices create different formal verification patterns
   
-- **Mathematical sophistication vs. formalization tractability trade-off** (Claude/Gemini vs. GPT-5.2)
-  - GPT-5.2's deeper insight (binomial reformulation + Kummer's theorem) is most complex to formalize
-  - Claude's simplest approach is most straightforward to verify
-  - GPT-5.2 discovered richer structure; this richness creates formalization cost
+- **Different proof strategies have different formalization complexity**
+  - GPT-5.2's binomial reformulation + Kummer's theorem approach requires more formalization machinery
+  - Claude's prime-based approach is more straightforward to verify in Lean
+  - Gemini's case-split approach sits in between in complexity
   
-- **All three approaches are formalizable**, suggesting the frontier is not mathematical expressiveness but how AI models reason about proof strategy and formal verification constraints
+- **All three approaches are in principle formalizable** with varying levels of effort and complexity
 
 **Recommendations for further work:**
 
@@ -459,11 +459,9 @@ Three **independent AI attempts** at the same problem, generating radically diff
   
 - **Formalization effort benchmarking:** Quantify LoC and completion time for all three approaches in Lean 4. Which model-generated strategy is most efficient to formalize? Does "simpler" always mean "faster to formalize"?
 
-- **Systematic strategy analysis:** Give Claude/Gemini/GPT-5.2 a suite of problems in different domains (number theory, combinatorics, analysis, logic). Do they show consistent strategy preferences? Are there problem classes where each model excels?
+- **Systematic strategy analysis:** Give Claude/Gemini/GPT-5.2 a suite of problems in different domains (number theory, combinatorics, analysis, logic). Do they show consistent strategy preferences across problems?
 
-- **Mathematical depth tracking:** Correlate proof sophistication (depth of insight, novelty of structure) with formalization complexity. Is there a systematic trade-off?
-
-- **Extensions:** Adapt GPT-5.2's binomial reformulation and Kummer approach to related problems (central binomial coefficient divisibility, other factorial inequalities). Does the approach transfer?
+- **Extensions:** Test whether GPT-5.2's binomial reformulation and Kummer approach transfers to related problems (central binomial coefficient divisibility, other factorial inequalities).
 
 - **Model training implications:** What prompt/training changes would make AI systems generate proofs optimized for formalization difficulty, not just mathematical elegance or brevity?
 

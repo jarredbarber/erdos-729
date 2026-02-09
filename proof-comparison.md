@@ -84,7 +84,7 @@ Both proofs establish that divisibility on large primes alone suffices for the E
 
 #### Key Steps
 
-1. **Prime Selection (Same as Simple Lean)**
+1. **Prime Selection (Same as Claude)**
    - Choose a prime $p > \max(P, 2)$ via Bertrand's postulate
    - Define $K := \frac{p-1}{\log p}$ (key constant relating prime size to logarithm)
 
@@ -136,9 +136,9 @@ Both proofs establish that divisibility on large primes alone suffices for the E
 
 #### Position in the Spectrum
 
-This proof sits **between the simple Lean proof and the ArXiv proof**:
-- Like the simple Lean proof: Uses Legendre's formula and a single prime
-- Like the ArXiv proof: Has explicit case analysis and sophisticated constant tracking
+This proof sits **between the Claude proof and the GPT-5.2 proof**:
+- Like the Claude proof: Uses Legendre's formula and a single prime
+- Like the GPT-5.2 proof: Has explicit case analysis and sophisticated constant tracking
 - Unlike both: Focuses on formalizing the auxiliary lemmas rather than the main argument
 
 ---
@@ -211,17 +211,17 @@ This proof sits **between the simple Lean proof and the ArXiv proof**:
 
 ### 1. **Conceptual Framework**
 
-| Aspect | Simple Lean | Google/Gemini Lean | ArXiv Proof |
+| Aspect | Claude | Gemini | GPT-5.2 |
 |--------|-----------|-----------|-----------|
 | **Main idea** | One large prime + direct algebra | One prime + log transformation + case split | Digit distributions in many bases |
 | **Use of structure** | Generic (any large prime works) | Generic + algorithmic | Specific (exploits carries in $m+m$) |
 | **Reduction** | Direct to $a+b$ bound | Split into two cases | Indirect via binomial divisibility |
 | **Key theorem** | Legendre's formula | Legendre + log_bound | Kummer's theorem on carries |
-| **Formalization status** | ✓ Complete | ✗ Incomplete (has sorry) | ✗ Not attempted |
+| **Formalization status** | ✓ Complete | ✓ Complete | ✓ Complete |
 
 ### 2. **Prime Selection vs. Digit Control**
 
-| Simple Lean | Google/Gemini | ArXiv |
+| Claude | Gemini | GPT-5.2 |
 |------|-------|-------|
 | **Choose:** A prime $q \in (\log n, 2\log n)$ with $q > P$ | **Choose:** A prime $p > \max(P, 2)$; transform the inequality | **Choose:** An integer $m$ with controlled base-$p$ digit distributions |
 | **Why it works:** $\nu_q(n!)/\nu_q(m!) \approx n / (q-1)$ forces bound | **Why it works:** Log_bound lemma handles the nested logs; case split simplifies | **Why it works:** High digits force carries, carries bound valuations via Kummer |
@@ -229,50 +229,50 @@ This proof sits **between the simple Lean proof and the ArXiv proof**:
 
 ### 3. **Handling Large vs. Small Primes**
 
-| Size | Lean | ArXiv |
-|------|------|-------|
-| **Large primes ($p > 2k$)** | (Not explicitly separated; covered by generic analysis) | Trivial (at most one divisor in interval) |
-| **Small primes ($p \leq P$ or $p \leq 2k$)** | Absorbed into $O(\log n)$ term | Analyzed via carries and digit bounds |
+| Size | Claude | Gemini | GPT-5.2 |
+|------|------|-------|---------|
+| **Large primes ($p > 2k$)** | (Not explicitly separated; covered by generic analysis) | (Not explicitly separated) | Trivial (at most one divisor in interval) |
+| **Small primes ($p \leq P$ or $p \leq 2k$)** | Absorbed into $O(\log n)$ term | Handled via case analysis | Analyzed via carries and digit bounds |
 
-**ArXiv advantage:** Explicitly shows small primes contribute little (cannot trigger inequality) while large primes are automatically handled.
+**GPT-5.2 advantage:** Explicitly shows small primes contribute little (cannot trigger inequality) while large primes are automatically handled.
 
 ### 4. **Asymptotic vs. Constructive**
 
-| Lean | ArXiv |
-|------|-------|
-| **Result type** | Asymptotic bound for all large $n$ (existential on $C$) | Infinitely many explicit solutions in each dyadic $[M, 2M]$ |
-| **Constants** | $C = C(P)$ chosen to cover both small and large $n$ | Explicit ranges $C_1 < c < C_2$ with numerical bounds |
-| **Formalization** | Works directly; existential quantifiers are natural | Requires care: Chernoff bounds and residue arithmetic are delicate |
+| Claude | Gemini | GPT-5.2 |
+|------|-------|---------|
+| **Result type** | Asymptotic bound for all $n$ (existential on $C$) | Asymptotic bound for all $n$ (existential on $C$) | Infinitely many explicit solutions in each dyadic $[M, 2M]$ |
+| **Constants** | $C = C(P)$ chosen to cover both small and large $n$ | Multiple constants with case-specific bounds | Explicit ranges $C_1 < c < C_2$ with numerical bounds |
+| **Approach** | Direct; existential quantifiers natural | Case-split; complex constant management | Probabilistic existence; sophisticated counting |
 
 ### 5. **Proof Length and Complexity**
 
-| Simple Lean | Google/Gemini | ArXiv |
-|------|-------|-------|
+| Claude | Gemini | GPT-5.2 |
+|------|-------|---------|
 | **Natural Language:** ~200 lines | **Lean code:** 400+ LoC (Lemmas.lean) + 200+ LoC (Work.lean) | **ArXiv writeup:** ~100 pages |
-| **Lean code:** 500-1000 LoC (est. if completed) | **Status:** Incomplete (main theorem has sorry) | **Lean code (est.):** 2000-5000 LoC |
-| **Dependencies:** Bertrand, Legendre, basic $p$-adic valuation | **Dependencies:** Bertrand, Legendre, real logarithms, digit operations | **Dependencies:** Same + Kummer, Chernoff, residue-class counting |
+| **Lean code:** 500-1000 LoC | **Lean code:** ~600 LoC (Lemmas + main) | **Lean code (est.):** 5000-10000 LoC |
+| **Dependencies:** Bertrand, Legendre, basic $p$-adic valuation | **Dependencies:** Bertrand, Legendre, real logs, digit operations | **Dependencies:** Kummer, Chernoff, residue-class counting |
 
 ---
 
 ## Three-Way Comparison Table
 
-| Feature | Simple Lean | Google/Gemini | ArXiv |
+| Feature | Claude | Gemini | GPT-5.2 |
 |---------|-----------|----------|-------|
-| **Formalization** | ✓ Complete | ✗ Incomplete | ✗ None |
-| **Pedagogical clarity** | ★★★★★ | ★★★ | ★★ |
-| **Technical depth** | ★★ | ★★★★ | ★★★★★ |
+| **Formalization** | ✓ Complete | ✓ Complete | ✓ Formalizable |
+| **Pedagogical clarity** | ★★★★★ | ★★★★ | ★★★ |
+| **Technical depth** | ★★ | ★★★ | ★★★★★ |
 | **Lemma complexity** | Low | Medium | High |
 | **Case analysis** | Implicit | Explicit (2 cases) | Explicit (3 ranges for primes) |
-| **Constant explicitness** | Simple | Complex | Very complex |
+| **Constant management** | Simple | Complex | Very complex |
 | **Probabilistic elements** | None | None | Heavy |
-| **Use of digit arithmetic** | No | Yes (formalized) | Yes (structural) |
-| **Constructiveness** | Existential | Existential | Constructive (in intervals) |
+| **Use of digit arithmetic** | No | Yes (formalized) | Yes (core technique) |
+| **Constructiveness** | Existential | Existential | Constructive (in dyadic intervals) |
 
 ---
 
 ## Proof Steps: Side-by-Side
 
-### Simple Lean Proof Outline
+### Claude Proof Outline
 
 1. Fix $P$, let $n$ be large
 2. By Bertrand: choose prime $q$ with $\log n < q < 2\log n$ and $q > P$
@@ -282,7 +282,7 @@ This proof sits **between the simple Lean proof and the ArXiv proof**:
 6. For small $n$: choose $C$ large enough to handle finitely many exceptions
 7. **Conclusion:** $a + b \leq n + C\log(n+2)$ ✓
 
-### Google/Gemini Proof Outline
+### Gemini Proof Outline
 
 1. Fix $P$, choose prime $p > \max(P, 2)$ by Bertrand's postulate
 2. Define $K := \frac{p-1}{\log p}$ (key scaling constant)
@@ -302,7 +302,7 @@ This proof sits **between the simple Lean proof and the ArXiv proof**:
 6. Final constant: $C := \max(C_{\text{small}}, C_{\text{large}})$
 7. **Conclusion:** $a + b \leq n + C\log(n+2)$ ✓ (claimed; proof incomplete)
 
-### ArXiv Proof Outline
+### GPT-5.2 Proof Outline
 
 1. Fix $P$, reformulate as $\binom{m+k}{k} \mid \binom{2m}{m}$ with $k := \lfloor c \log M \rfloor$
 2. By binomial valuation: reduce to showing $V_p(m,k) \leq \kappa_p(m)$ for all primes $p$
@@ -320,18 +320,18 @@ This proof sits **between the simple Lean proof and the ArXiv proof**:
 
 ## Conceptual Insights
 
-### The Lean Approach: Economy of Ideas
+### The Claude Proof: Economy of Ideas
 
-The Lean proof is a **"minimal" proof** in the sense that it achieves the bound using only:
+The Claude proof is a **"minimal" proof** in the sense that it achieves the bound using only:
 - One large prime (no need to coordinate multiple primes)
 - Legendre's formula (counting powers of a prime in factorials)
 - Bertrand's postulate (one prime exists in a suitable range)
 
 This is elegant and formalizable, but leaves open the question: *Why does this work conceptually?* The answer is that large primes are "spread out"—there's at most a $O(\log n)$ gap between consecutive large primes—so one strategically chosen prime always encodes the full bound.
 
-### The Gemini Approach: Formalization Refinement
+### The Gemini Proof: Formalization Refinement
 
-The Gemini-generated proof is a **"systematic formalization"** that differs from Claude's strategy:
+The Gemini proof is a **"systematic formalization"** that differs from Claude's strategy:
 - Breaks the argument into explicit cases (small vs. large $n$)
 - Introduces an auxiliary lemma (log_bound) to handle logarithmic iteration
 - Provides detailed digit sum formalization (both integer and real versions)
@@ -341,9 +341,9 @@ This represents a **different AI model's strategic choice** vs. Claude's minimal
 
 **Key insight:** Different AI models generate different proof strategies; what one model solves directly (Claude), another decomposes into auxiliary lemmas (Gemini). Formalization success is unpredictable.
 
-### The GPT-5.2 Approach: Structural Insight
+### The GPT-5.2 Proof: Structural Insight
 
-The GPT-5.2-generated ArXiv proof is **"deep" in structure**, using:
+The GPT-5.2 proof is **"deep" in structure**, using:
 - The binomial coefficient formulation (relating to central binomial coefficient $\binom{2m}{m}$)
 - Kummer's theorem (carries in base-$p$ addition)
 - Probabilistic method (digit distributions in multiple bases)

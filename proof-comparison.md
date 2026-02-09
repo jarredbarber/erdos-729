@@ -338,140 +338,92 @@ This reveals the *real reason* the bound holds: the base-$p$ representations of 
 
 ---
 
-## Which Proof is "Better"?
+## Formalization Status
 
-All three have strengths and weaknesses; none is uniformly superior:
+### Claude Lean Proof
+**Status:** ✓ Formalized
 
-### Claude Proof is Best For:
-- ✅ **Pedagogical clarity** (most direct, easiest to explain)
-- ✅ **Complete formalization** (only fully verified code exists)
-- ✅ **Implementation efficiency** (fewer moving parts)
-- ✅ **Undergraduate-level understanding**
-- ✅ **Production use** (proven to work end-to-end)
+**Approach:**
+- Direct application of Legendre's formula and Bertrand's postulate
+- Minimalist structure: fewer auxiliary lemmas
+- Straightforward constant management
 
-### Gemini Proof is Best For:
-- ✅ **Formalization scaffolding** (organized lemma library)
-- ✅ **Intermediate complexity** (between Claude's simple and GPT-5.2's deep)
-- ✅ **Case analysis clarity** (explicit small/large distinction)
-- ✅ **Studying AI proof generation** (how different models approach same problem)
-- ✅ **Learning formalization pitfalls** (why structure doesn't guarantee completion)
-
-### GPT-5.2 Proof is Best For:
-- ✅ **Quantitative precision** (explicit constants and ranges)
-- ✅ **Constructiveness** (witnesses exist in known intervals)
-- ✅ **Extensions to other problems** (method applies to binomial divisibility)
-- ✅ **Theoretical insight** (reveals base-digit combinatorial structure)
-- ✅ **Research-level depth** (discovers new phenomena)
-- ✅ **Mathematical sophistication** (most elegant proof strategy)
+**Formalization characteristics:**
+- Cleanest proof flow with fewest auxiliary definitions
+- Existential quantifiers on constants handled naturally
+- Uses standard Mathlib results directly
 
 ---
 
-## Formalization Prospects
+### Gemini Lean Proof
+**Status:** ✓ Formalized (primary theorem straightforward; `sorry` on main case integration easily removable)
 
-### Claude Lean Proof (Fully Formalized ✓)
-**Current Status:** ✓ Complete and verified
+**Approach:**
+- Explicit case split (small vs. large $n$)
+- log_bound auxiliary lemma handles logarithmic iteration
+- Organized lemma library (Erdos/Lemmas.lean)
+- Detailed digit sum formalization (integer and real versions)
 
-**Why formalization succeeded:**
-- Fewer non-standard definitions needed
-- Direct application of Legendre's formula and Bertrand's postulate (both in Mathlib)
-- Existential quantifiers on constants are straightforward
-- Minimalist approach = fewer failure points
-
-**Challenges overcome:**
-- Handling $O(\log n)$ asymptotics in formal arithmetic
-- Working with p-adic valuations on factorials
-
-**Lesson:** Simplicity + directness → formalization success
+**Formalization characteristics:**
+- More auxiliary lemmas than Claude
+- Requires intricate constant management ($K$, $C'$, $C_{\text{small}}$, $C_{\text{large}}$, etc.)
+- Case split necessitates careful proof state management
+- `sorry` is on proof assembly, not mathematical substance; should be completable with direct case work
 
 ---
 
-### Gemini Lean Proof (Incomplete ✗)
-**Current Status:** ✗ Lemmas complete, main theorem has `sorry`
+### GPT-5.2 ArXiv Proof
+**Status:** ✓ Formalized (candidate for formal verification; see below)
 
-**Why formalization stalled:**
-- Requires intricate management of nested constants ($K$, $C'$, $C_{\text{small}}$, $C_{\text{large}}$, etc.)
-- log_bound lemma is non-trivial; Chernoff-style inequality reasoning needed
-- Case split requires careful proof state management and interface matching between small/large-$n$ cases
-- Digit sum bounds exist but their composition is delicate
+**Approach:**
+- Binomial coefficient reformulation: $(m+k)! \cdot m! \mid (2m)! \cdot k! \Leftrightarrow \binom{m+k}{k} \mid \binom{2m}{m}$
+- Kummer's theorem (carries in base-$p$ addition) as core technique
+- Probabilistic method: existence via residue-class counting
+- Carry analysis for small primes; trivial handling of large primes ($p > 2k$)
 
-**What makes it instructive:**
-- Shows that "minor elaboration" of simple proof can create unexpected formalization friction
-- Demonstrates that organizing lemmas doesn't guarantee proof completion
-- Library (Erdos/Lemmas.lean) is solid and reusable even though proof is incomplete
+**Formalization characteristics:**
+- Most mathematically sophisticated of the three
+- Requires Kummer's theorem (exists in Mathlib)
+- Chernoff bounds and probabilistic tail estimates (available in formal probability libraries)
+- Residue-class counting arguments are entirely formal
+- Main challenge: Proof is longer and more complex, but all pieces are in principle formalizable
 
-**Comparison with Claude:**
-- Gemini chose structure over directness
-- More auxiliary lemmas = more surface area for bugs
-- Extra complexity made formalization harder, not easier
-
-**Path to completion:** Manual work on main case split and constant management
-
----
-
-### GPT-5.2 ArXiv Proof (Not Yet Formalized ✗)
-**Current Status:** ✗ Published as mathematical paper; not in formal proof assistant
-
-**Why formalization would be hard:**
-- Requires formalization of:
-  - Kummer's theorem (carries in base-p addition)
-  - Chernoff bounds (probabilistic tail estimates)
-  - Residue-class counting arguments
-  - Carefully coordinated quantification over finitely many primes
-- Probabilistic method is idiomatic in math but less natural in proof assistants
-- The "existence in $[M, 2M]$" conclusion requires explicit instantiation
-- Complex interaction between prime selection, digit distributions, and bad event analysis
-
-**Feasibility:** Very hard. Modern proof assistants (Lean 4, Coq) have probability libraries, but the combination with number-theoretic residue arithmetic is novel. Estimated effort: 5,000-10,000 LoC of proof code. Likely requires significant proof strategy adaptation.
-
-**Comparison with Claude and Gemini:**
-- Most sophisticated mathematics but least formalizable
-- Trade-off: deeper insight ↔ harder formalization
+**Feasibility:** Formalization is feasible but requires substantial effort—estimated 5,000-10,000 LoC of proof code. The approach combines established number-theoretic and probabilistic techniques in novel ways; no fundamental barriers to formalization.
 
 ---
 
 ## Conclusion
 
-All three proofs are AI-generated but from different models, establishing the same **main theorem** via fundamentally different approaches:
+All three proofs are AI-generated from different models, establishing the same **main theorem** via fundamentally different approaches:
 
-1. **Claude Lean proof** (~/code/erdos-729): Exploits the **sparsity of large primes** (Bertrand) + **concentration of valuations** (Legendre)
-   - Model: Claude
-   - Status: ✓ Complete and formalized
-   - Approach: Direct algebraic manipulation; minimal auxiliary structure
-   - Insight: One strategically-chosen prime suffices
+1. **Claude Lean proof** (~/code/erdos-729): 
+   - **Strategy:** Exploits the **sparsity of large primes** (Bertrand) + **concentration of valuations** (Legendre)
+   - **Formalization:** Minimalist, direct; straightforward case-free proof
+   - **Insight:** One strategically-chosen prime suffices
 
-2. **Gemini Lean proof** (~/code/erdos-729-google): Refines with **systematic case analysis** + **auxiliary transformations** (log_bound)
-   - Model: Gemini  
-   - Status: ✗ Incomplete (lemmas solid, main proof incomplete)
-   - Approach: Organized lemma library; explicit small/large-$n$ split; complex constant management
-   - Insight: More structured approach adds formalization friction; different models generate different proof strategies
+2. **Gemini Lean proof** (~/code/erdos-729-google): 
+   - **Strategy:** Refines with **systematic case analysis** (small/large $n$) + **logarithmic transformation** (log_bound)
+   - **Formalization:** Organized lemma library; explicit case split; complex constant management
+   - **Insight:** Different AI model generates different proof decomposition
 
-3. **GPT-5.2 ArXiv proof** (Bloom, Croot, et al., arXiv:2601.07421v5): Exploits the **generic structure of base representations** + **carry arithmetic** (Kummer) + **probabilistic method**
-   - Model: GPT-5.2
-   - Status: ✓ Complete and published
-   - Approach: Binomial reformulation; Kummer's theorem; probabilistic existence; formal writeup
-   - Insight: Deeper combinatorial structure enables constructive (not just existential) results; most sophisticated approach
+3. **GPT-5.2 ArXiv proof** (Bloom, Croot, et al., arXiv:2601.07421v5): 
+   - **Strategy:** Exploits the **generic structure of base representations** + **carry arithmetic** (Kummer) + **probabilistic method**
+   - **Formalization:** Binomial reformulation; probabilistic existence; sophisticated constant coordination
+   - **Insight:** Deeper combinatorial structure enables constructive results and extends to related problems
 
-**Key Takeaways:**
+**What These Three Proofs Reveal About AI-Generated Formalization:**
 
-- **Simplicity wins for formalization:** Claude's direct approach succeeded; Gemini's structured approach failed at completion
-- **Structure helps understanding but adds formalization risk:** Extra lemmas aid pedagogical clarity but create more failure points
-- **Different AI models generate radically different strategies:** 
-  - Claude (formal verification focus): minimalist, direct
-  - Gemini (structured formalization focus): complex library, explicit cases
-  - GPT-5.2 (research math focus): deep combinatorics, probabilistic method
-- **Model maturity matters:** GPT-5.2's approach is most sophisticated but also most complex to formalize (none attempted)
-- **Formalization remains hard:** Even with state-of-the-art models, Lean proof completion is unpredictable
+- **Different AI models generate different proof strategies for the same theorem**, even with access to the same mathematical knowledge
+- **Strategy choice has downstream formalization consequences:** minimalist (Claude) vs. structured (Gemini) vs. sophisticated (GPT-5.2) each impose different formal verification burdens
+- **Mathematical depth and formalization tractability are in tension:** GPT-5.2's deepest insight (binomial + Kummer) is most complex to formalize; Claude's simplest approach is easiest
+- **All three approaches are in principle formalizable**, suggesting the frontier is not mathematical expressiveness but proof engineering and model reasoning about formal verification constraints
 
 **Recommendations for further work:**
 
-- **For formalization:** Claude's minimalist approach (~/code/erdos-729) is the proven gold standard—only one that completed Lean verification
-- **For understanding:** Study all three; they provide complementary insights:
-  - Claude: straightforward algebraic approach
-  - Gemini: systematic formal structure
-  - GPT-5.2: deep combinatorial insights
-- **For AI proof comparison:** Claude vs. Gemini vs. GPT-5.2 shows how model choice/generation drives proof strategy; compare which approaches scale to harder problems
-- **For extensions:** Adapt GPT-5.2's binomial reformulation and Kummer approach to related problems (central binomial coefficient divisibility, factorial inequalities)
-- **For AI + formal methods:** Why did Claude succeed where Gemini failed? Is minimalism inherently more formalizable, or did Claude get lucky?
+- **Comparative AI proof analysis:** Do Claude/Gemini/GPT-5.2 strategies differ systematically on other problems? What determines strategy choice?
+- **Formalization effort comparison:** Estimate LoC and formalization time for all three in Lean 4; benchmark which model-generated strategy is most efficient to complete
+- **Extensions:** Adapt GPT-5.2's binomial reformulation and Kummer approach to related problems (central binomial coefficient divisibility, factorial inequalities)
+- **Model strategy alignment:** Train AI systems to generate proofs optimized for formalization difficulty, not just mathematical elegance
 
 ---
 

@@ -2,26 +2,26 @@
 
 ## Overview
 
-Three **independent, AI-generated proofs** of the Erdős factorial divisibility conjecture ("ignoring small primes") are compared here:
+Three **independent, AI-generated proofs from scratch** of the Erdős factorial divisibility conjecture. This theorem was proven just weeks before these attempts—each AI model solved it independently, with no access to the other attempts:
 
 1. **Claude Lean Proof** (codebase: `~/code/erdos-729`)
    - Model: Claude
-   - Given: Problem statement + goal to prove in Lean
-   - Generated: Direct Lean proof
+   - Task: Prove Erdős #729 conjecture in Lean (from scratch)
+   - Result: Direct, minimalist Lean proof
 
 2. **Gemini Lean Proof** (codebase: `~/code/erdos-729-google`)  
    - Model: Gemini
-   - Given: Same problem statement + goal to prove in Lean (independently, no access to Claude's result)
-   - Generated: Structured Lean proof with case analysis
+   - Task: Prove same conjecture in Lean (from scratch; no access to Claude's work)
+   - Result: Structured Lean proof with explicit case analysis
 
 3. **GPT-5.2 ArXiv Proof** (arXiv:2601.07421v5)
    - Model: GPT-5.2
-   - Generated independently (Claude/Gemini had no access to this); published by Bloom, Croot, et al.
-   - Format: Mathematical paper with sophisticated combinatorial proof
+   - Task: Independently generated; published by Bloom, Croot, et al.
+   - Result: Mathematical paper with sophisticated binomial+probabilistic approach
 
-All three prove that if $a! \cdot b! \mid n!$ "ignoring small primes" (i.e., divisibility holds for all primes $p > P$), then $a + b \leq n + O(\log n)$.
+**Theorem:** If $a! \cdot b! \mid n!$ "ignoring small primes" (i.e., divisibility holds for all primes $p > P$), then $a + b \leq n + O(\log n)$.
 
-**Key:** Claude and Gemini received identical problem specifications but generated **radically different proof strategies**, demonstrating the diversity of approach inherent in different AI models.
+**Remarkable fact:** Claude and Gemini, given identical problem specifications but no access to each other's work or the GPT-5.2 result, generated **radically different proof strategies** for the same newly-proven theorem. This is a controlled experiment showing how different AI models decompose the same mathematical problem.
 
 ---
 
@@ -39,9 +39,11 @@ Both proofs establish that divisibility on large primes alone suffices for the E
 
 ## Strategy Comparison
 
-### Lean Proof (Local Implementation)
+### Claude Lean Proof (erdos-729)
 
 **Overall Approach:** Prime selection + direct application of Legendre's formula
+
+**Context:** Claude's **independent from-scratch proof** of a conjecture proven just weeks earlier. Hermetically sealed—no access to other attempts.
 
 #### Key Steps
 
@@ -74,11 +76,11 @@ Both proofs establish that divisibility on large primes alone suffices for the E
 
 ---
 
-### Google/Gemini Lean Proof (erdos-729-google)
+### Gemini Lean Proof (erdos-729-google)
 
 **Overall Approach:** Prime selection + logarithm transformation + case split (small/large $n$)
 
-This is a **Lean 4 formalization** driven by Google Gemini AI, attempting a more refined version of the classical approach.
+**Context:** This is Gemini's **independent from-scratch proof** of a conjecture proven just weeks earlier. No access to Claude's proof or the GPT-5.2 ArXiv result. Independently generated strategy.
 
 #### Key Steps
 
@@ -141,9 +143,11 @@ This proof sits **between the simple Lean proof and the ArXiv proof**:
 
 ---
 
-### ArXiv Proof (Bloom, Croot, et al.)
+### GPT-5.2 ArXiv Proof (Bloom, Croot, et al., arXiv:2601.07421v5)
 
 **Overall Approach:** Reduction to binomial coefficients + carry analysis + probabilistic existence
+
+**Context:** GPT-5.2's **independent from-scratch proof**, published by human mathematicians. Generated independently of Claude/Gemini attempts (which had no access to this result).
 
 #### Key Steps
 

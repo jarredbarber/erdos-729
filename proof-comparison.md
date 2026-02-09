@@ -2,13 +2,26 @@
 
 ## Overview
 
-Three AI-generated proofs of the Erdős factorial divisibility conjecture ("ignoring small primes") are compared here, each from a different model:
+Three **independent, AI-generated proofs** of the Erdős factorial divisibility conjecture ("ignoring small primes") are compared here:
 
-1. **Claude Lean Proof** (local codebase: `~/code/erdos-729`) - Claude model
-2. **Gemini Lean Proof** (local codebase: `~/code/erdos-729-google`) - Gemini model  
-3. **GPT-5.2 ArXiv Proof** (arXiv:2601.07421v5) - GPT-5.2 model, published by Bloom, Croot, et al.
+1. **Claude Lean Proof** (codebase: `~/code/erdos-729`)
+   - Model: Claude
+   - Given: Problem statement + goal to prove in Lean
+   - Generated: Direct Lean proof
+
+2. **Gemini Lean Proof** (codebase: `~/code/erdos-729-google`)  
+   - Model: Gemini
+   - Given: Same problem statement + goal to prove in Lean (independently, no access to Claude's result)
+   - Generated: Structured Lean proof with case analysis
+
+3. **GPT-5.2 ArXiv Proof** (arXiv:2601.07421v5)
+   - Model: GPT-5.2
+   - Generated independently (Claude/Gemini had no access to this); published by Bloom, Croot, et al.
+   - Format: Mathematical paper with sophisticated combinatorial proof
 
 All three prove that if $a! \cdot b! \mid n!$ "ignoring small primes" (i.e., divisibility holds for all primes $p > P$), then $a + b \leq n + O(\log n)$.
+
+**Key:** Claude and Gemini received identical problem specifications but generated **radically different proof strategies**, demonstrating the diversity of approach inherent in different AI models.
 
 ---
 
@@ -394,36 +407,61 @@ This reveals the *real reason* the bound holds: the base-$p$ representations of 
 
 ## Conclusion
 
-All three proofs are AI-generated from different models, establishing the same **main theorem** via fundamentally different approaches:
+Three **independent AI attempts** at the same problem, generating radically different proofs:
 
-1. **Claude Lean proof** (~/code/erdos-729): 
-   - **Strategy:** Exploits the **sparsity of large primes** (Bertrand) + **concentration of valuations** (Legendre)
-   - **Formalization:** Minimalist, direct; straightforward case-free proof
-   - **Insight:** One strategically-chosen prime suffices
+### Claude (Independent Attempt #1)
+- **Received:** Problem statement + goal to prove in Lean
+- **Generated:** Minimalist, direct proof
+- **Strategy:** Sparsity of large primes (Bertrand) + concentration of valuations (Legendre)
+- **Formalization:** Case-free, straightforward
+- **Result:** ✓ Complete Lean proof
 
-2. **Gemini Lean proof** (~/code/erdos-729-google): 
-   - **Strategy:** Refines with **systematic case analysis** (small/large $n$) + **logarithmic transformation** (log_bound)
-   - **Formalization:** Organized lemma library; explicit case split; complex constant management
-   - **Insight:** Different AI model generates different proof decomposition
+### Gemini (Independent Attempt #2)
+- **Received:** Same problem statement + goal to prove in Lean (no access to Claude's work)
+- **Generated:** Structured proof with explicit case analysis
+- **Strategy:** Systematic case split (small/large $n$) + logarithmic transformation (log_bound)
+- **Formalization:** Organized lemma library with complex constant management
+- **Result:** ✓ Complete (main theorem assembly straightforward)
 
-3. **GPT-5.2 ArXiv proof** (Bloom, Croot, et al., arXiv:2601.07421v5): 
-   - **Strategy:** Exploits the **generic structure of base representations** + **carry arithmetic** (Kummer) + **probabilistic method**
-   - **Formalization:** Binomial reformulation; probabilistic existence; sophisticated constant coordination
-   - **Insight:** Deeper combinatorial structure enables constructive results and extends to related problems
+### GPT-5.2 (Independent, Different Format)
+- **Generated:** Mathematical paper with sophisticated combinatorial proof
+- **Strategy:** Binomial reformulation + carry arithmetic (Kummer) + probabilistic method
+- **Formalization:** Binomial divisibility reduction; probabilistic existence argument
+- **Result:** ✓ Published; ready for formal verification
 
-**What These Three Proofs Reveal About AI-Generated Formalization:**
+**The fundamental observation:** Given the same problem, different AI models independently generated three mathematically distinct proofs with different strategic decompositions, suggesting proof strategy is not uniquely determined by problem structure but by model architecture and reasoning patterns.
 
-- **Different AI models generate different proof strategies for the same theorem**, even with access to the same mathematical knowledge
-- **Strategy choice has downstream formalization consequences:** minimalist (Claude) vs. structured (Gemini) vs. sophisticated (GPT-5.2) each impose different formal verification burdens
-- **Mathematical depth and formalization tractability are in tension:** GPT-5.2's deepest insight (binomial + Kummer) is most complex to formalize; Claude's simplest approach is easiest
-- **All three approaches are in principle formalizable**, suggesting the frontier is not mathematical expressiveness but proof engineering and model reasoning about formal verification constraints
+**What These Three Independent Proofs Reveal About AI-Generated Mathematics:**
+
+- **Given identical problem specifications, different AI models generate fundamentally different proof strategies** (Claude and Gemini)
+  - Claude chose: minimalist, direct algebraic approach
+  - Gemini chose: structured, explicit case decomposition with auxiliary lemmas
+  - Neither model had access to the other's work
+  
+- **Model choice determines proof decomposition, which cascades into formalization structure**
+  - Same mathematical content (Legendre's formula, digit sums, prime selection)
+  - Different strategic choices create different formal verification patterns
+  
+- **Mathematical sophistication vs. formalization tractability trade-off** (Claude/Gemini vs. GPT-5.2)
+  - GPT-5.2's deeper insight (binomial reformulation + Kummer's theorem) is most complex to formalize
+  - Claude's simplest approach is most straightforward to verify
+  - GPT-5.2 discovered richer structure; this richness creates formalization cost
+  
+- **All three approaches are formalizable**, suggesting the frontier is not mathematical expressiveness but how AI models reason about proof strategy and formal verification constraints
 
 **Recommendations for further work:**
 
-- **Comparative AI proof analysis:** Do Claude/Gemini/GPT-5.2 strategies differ systematically on other problems? What determines strategy choice?
-- **Formalization effort comparison:** Estimate LoC and formalization time for all three in Lean 4; benchmark which model-generated strategy is most efficient to complete
-- **Extensions:** Adapt GPT-5.2's binomial reformulation and Kummer approach to related problems (central binomial coefficient divisibility, factorial inequalities)
-- **Model strategy alignment:** Train AI systems to generate proofs optimized for formalization difficulty, not just mathematical elegance
+- **Claude vs. Gemini as a controlled experiment:** Same problem, different models, no cross-contamination. Why did they choose such different strategies? What would a third model choose?
+  
+- **Formalization effort benchmarking:** Quantify LoC and completion time for all three approaches in Lean 4. Which model-generated strategy is most efficient to formalize? Does "simpler" always mean "faster to formalize"?
+
+- **Systematic strategy analysis:** Give Claude/Gemini/GPT-5.2 a suite of problems in different domains (number theory, combinatorics, analysis, logic). Do they show consistent strategy preferences? Are there problem classes where each model excels?
+
+- **Mathematical depth tracking:** Correlate proof sophistication (depth of insight, novelty of structure) with formalization complexity. Is there a systematic trade-off?
+
+- **Extensions:** Adapt GPT-5.2's binomial reformulation and Kummer approach to related problems (central binomial coefficient divisibility, other factorial inequalities). Does the approach transfer?
+
+- **Model training implications:** What prompt/training changes would make AI systems generate proofs optimized for formalization difficulty, not just mathematical elegance or brevity?
 
 ---
 

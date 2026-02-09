@@ -116,7 +116,7 @@ This is a **Lean 4 formalization** driven by Google Gemini AI, attempting a more
 - **Incomplete proof:** Main theorem has a `sorry` (completion claimed to be "mathematically sound but implementation details preventing compilation")
 - **Complex constant management:** Many nested constants with intricate dependencies; harder to verify correctness
 - **Deep formalization:** Many auxiliary lemmas; more surface area for bugs
-- **Model-dependent:** Proof strategy driven by Gemini; may reflect AI-specific choices rather than mathematical elegance
+- **Implementation challenges:** Different AI model (Gemini vs Claude) produced a different approach; reflects model-specific strategic choices rather than unique mathematical insight
 
 #### Position in the Spectrum
 
@@ -311,17 +311,17 @@ The Lean proof is a **"minimal" proof** in the sense that it achieves the bound 
 
 This is elegant and formalizable, but leaves open the question: *Why does this work conceptually?* The answer is that large primes are "spread out"—there's at most a $O(\log n)$ gap between consecutive large primes—so one strategically chosen prime always encodes the full bound.
 
-### The Google/Gemini Approach: Formalization Refinement
+### The Gemini Approach: Formalization Refinement
 
-The Google/Gemini proof is a **"systematic formalization"** that:
-- Breaks the argument into cleaner cases (small vs. large $n$)
-- Introduces an auxiliary lemma (log_bound) to handle the logarithmic iteration
+The Gemini-generated proof is a **"systematic formalization"** that differs from Claude's strategy:
+- Breaks the argument into explicit cases (small vs. large $n$)
+- Introduces an auxiliary lemma (log_bound) to handle logarithmic iteration
 - Provides detailed digit sum formalization (both integer and real versions)
 - Organizes lemmas into a library (Erdos/Lemmas.lean) for potential reuse
 
-This is intermediate: it keeps the simplicity of Legendre's formula but adds structure for formal verification. The incomplete proof (main theorem has a `sorry`) suggests that formalizing the case split and constant management is **more delicate than the informal argument suggests**, even with AI assistance.
+This represents a **different AI model's strategic choice** vs. Claude's minimalist approach: intermediate complexity that keeps Legendre's formula but adds structure. The incomplete proof (main theorem has a `sorry`) suggests that explicit case-split + complex constant management created **more formalization friction than the informal argument suggested**.
 
-**Key insight:** Moving from natural language to formal code requires significant additional structure and bookkeeping; what seems like a "simple" proof can become complex and brittle when fully formalized.
+**Key insight:** Different AI models generate different proof strategies; what one model solves directly, another decomposes into auxiliary lemmas. Neither strategy guarantees success—formalization remains unpredictable.
 
 ### The ArXiv Approach: Structural Insight
 
@@ -418,31 +418,36 @@ All three have strengths and weaknesses; none is uniformly superior:
 
 All three proofs establish the same **main theorem**, but via fundamentally different approaches:
 
-1. **Simple Lean proof:** Exploits the **sparsity of large primes** (Bertrand) + **concentration of valuations** (Legendre)
+1. **Claude-generated Lean proof** (~/code/erdos-729): Exploits the **sparsity of large primes** (Bertrand) + **concentration of valuations** (Legendre)
    - Status: ✓ Complete and formalized
+   - Approach: Direct algebraic manipulation; minimal auxiliary structure
    - Insight: One strategically-chosen prime suffices
 
-2. **Google/Gemini proof:** Refines the Lean approach with **systematic case analysis** + **auxiliary transformations** (log_bound)
+2. **Gemini-generated Lean proof** (~/code/erdos-729-google): Refines with **systematic case analysis** + **auxiliary transformations** (log_bound)
    - Status: ✗ Incomplete (lemmas solid, main proof incomplete)
-   - Insight: Formalization requires more structure than the informal argument
+   - Approach: Organized lemma library; explicit small/large-$n$ split; complex constant management
+   - Insight: Formalization requires more structure than informal argument; different AI models generate different strategies
 
-3. **ArXiv proof:** Exploits the **generic structure of base representations** + **carry arithmetic** (Kummer) + **probabilistic method**
+3. **Human-written ArXiv proof** (Bloom, Croot, et al.): Exploits the **generic structure of base representations** + **carry arithmetic** (Kummer) + **probabilistic method**
    - Status: ✗ Not attempted in formal proofs
-   - Insight: Deeper combinatorial structure enables constructive results
+   - Approach: Binomial reformulation; Kummer's theorem; probabilistic existence
+   - Insight: Deeper combinatorial structure enables constructive (not just existential) results
 
 **Key Takeaways:**
 
-- **Simplicity wins for formalization:** The most direct approach is easiest to verify formally
-- **Structure helps but adds complexity:** Organizing lemmas aids understanding but doesn't guarantee completion
+- **Simplicity wins for formalization:** The most direct approach (Claude's strategy) is easiest to verify formally
+- **Structure helps but adds complexity:** Organizing lemmas (Gemini's approach) aids understanding but introduces new failure modes
+- **Different AI models generate different strategies:** Claude produced a minimalist proof; Gemini produced a more structured but incomplete one
 - **Different proofs have different purposes:** Simple proofs teach the concept; deep proofs reveal hidden structure
-- **AI-assisted proof search has limits:** Even with capable models, bridging the informal-to-formal gap remains hard
+- **Formalization remains hard:** Even with state-of-the-art models, bridging the informal-to-formal gap requires both strategy and luck
 
 **Recommendations for further work:**
 
-- **For formalization:** The simple Lean approach is the gold standard—focus here for practical verification
+- **For formalization:** Claude's minimalist approach (~/code/erdos-729) is the gold standard—proven to work end-to-end
 - **For understanding:** Study all three; they provide complementary insights into why the Erdős bound holds
-- **For extensions:** Adapt the ArXiv techniques to related problems (binomial divisibility, other factorial inequalities)
-- **For AI + formal methods:** The Google/Gemini incomplete proof is a case study in where AI-assisted proof discovery struggles
+- **For AI proof strategy:** Compare Claude vs. Gemini approaches: minimalism vs. structure—what works better for formalization?
+- **For extensions:** Adapt the ArXiv techniques (human-written) to related problems (binomial divisibility, other factorial inequalities)
+- **For AI + formal methods:** Gemini's incomplete proof is instructive—shows how careful lemma organization can still hit formalization friction
 
 ---
 

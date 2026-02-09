@@ -60,6 +60,73 @@ Both proofs establish that divisibility on large primes alone suffices for the E
 
 ---
 
+### Google/Gemini Lean Proof (erdos-729-google)
+
+**Overall Approach:** Prime selection + logarithm transformation + case split (small/large $n$)
+
+This is a **Lean 4 formalization** driven by Google Gemini AI, attempting a more refined version of the classical approach.
+
+#### Key Steps
+
+1. **Prime Selection (Same as Simple Lean)**
+   - Choose a prime $p > \max(P, 2)$ via Bertrand's postulate
+   - Define $K := \frac{p-1}{\log p}$ (key constant relating prime size to logarithm)
+
+2. **Logarithm Transformation Lemma (Novel)**
+   - **log_bound lemma:** Transforms inequalities of the form $a \leq n + K \log a$ to $a \leq n + C' \log n$
+   - Uses helper lemma `log_bound_helper`: Shows that for large $x$, we have $C \log x \leq x/2$
+   - This is the crucial step that handles the iterative logarithm issue
+
+3. **Digit Sum Bounds (Detailed)**
+   - Formalize Legendre's formula: $(p-1) \cdot v_p(n!) = n - S_p(n)$ where $S_p(n)$ is digit sum in base $p$
+   - Prove: $S_p(n) \leq (p-1)(\log_p n + 1) = O(\log n)$
+   - **Real version:** $S_p(n) \leq \frac{p-1}{\log p} \log n + (p-1)$ as a real inequality
+
+4. **Case Split**
+
+   **Case 1: Small $n$ (where $n < p$)**
+   - If $p \nmid n!$, then $v_p(n!) = 0$
+   - From divisibility hypothesis: $v_p(a!) + v_p(b!) \leq 0$, so both are $0$
+   - This means $a < p$ and $b < p$
+   - Therefore $a + b < 2p$
+   - Bound: $2p \approx 2\log n$ in the limiting regime
+
+   **Case 2: Large $n$ (where $n \geq p$)**
+   - Define $N := n + (p-1)$ (adjusted scale)
+   - Show $a - S_p(a) \leq n$ (from Legendre and divisibility)
+   - Combine with digit sum bound to get: $a \leq n + K \log a + (p-1)$
+   - Apply log_bound lemma with parameter $N$: $a \leq N + C' \log N$
+   - Since $N \leq 2n$, obtain final bound
+
+5. **Constant Management**
+   - Define multiple constants:
+     - $C_{\text{small}} := \frac{2p}{\log 2}$ (for small $n$ case)
+     - $C_{\text{const}}$ (combines various log terms)
+     - $C_{\text{large}}$ (for large $n$ case)
+     - $C := \max(C_{\text{small}}, C_{\text{large}})$ (final choice)
+
+#### Strengths
+- **Sophisticated formal development:** Deep lemma structure (Erdos/Lemmas.lean) with detailed auxiliary results
+- **Explicit case handling:** Cleanly separates small and large $n$ with distinct strategies
+- **Intermediate transformations:** The log_bound lemma is a powerful abstraction, useful for other problems
+- **Detailed digit sum formalization:** Both integer and real versions, carefully connected
+- **Organized code:** Modular structure with separate lemma and work files
+
+#### Weaknesses
+- **Incomplete proof:** Main theorem has a `sorry` (completion claimed to be "mathematically sound but implementation details preventing compilation")
+- **Complex constant management:** Many nested constants with intricate dependencies; harder to verify correctness
+- **Deep formalization:** Many auxiliary lemmas; more surface area for bugs
+- **Model-dependent:** Proof strategy driven by Gemini; may reflect AI-specific choices rather than mathematical elegance
+
+#### Position in the Spectrum
+
+This proof sits **between the simple Lean proof and the ArXiv proof**:
+- Like the simple Lean proof: Uses Legendre's formula and a single prime
+- Like the ArXiv proof: Has explicit case analysis and sophisticated constant tracking
+- Unlike both: Focuses on formalizing the auxiliary lemmas rather than the main argument
+
+---
+
 ### ArXiv Proof (Bloom, Croot, et al.)
 
 **Overall Approach:** Reduction to binomial coefficients + carry analysis + probabilistic existence
@@ -126,20 +193,21 @@ Both proofs establish that divisibility on large primes alone suffices for the E
 
 ### 1. **Conceptual Framework**
 
-| Aspect | Lean Proof | ArXiv Proof |
-|--------|-----------|-----------|
-| **Main idea** | One large prime encodes the bound | Digit distributions in many bases encode the bound |
-| **Use of structure** | Generic (any large prime works) | Specific (exploits carries in $m+m$) |
-| **Reduction** | Direct to $a+b$ bound | Indirect via binomial divisibility |
-| **Key theorem** | Legendre's formula | Kummer's theorem on carries |
+| Aspect | Simple Lean | Google/Gemini Lean | ArXiv Proof |
+|--------|-----------|-----------|-----------|
+| **Main idea** | One large prime + direct algebra | One prime + log transformation + case split | Digit distributions in many bases |
+| **Use of structure** | Generic (any large prime works) | Generic + algorithmic | Specific (exploits carries in $m+m$) |
+| **Reduction** | Direct to $a+b$ bound | Split into two cases | Indirect via binomial divisibility |
+| **Key theorem** | Legendre's formula | Legendre + log_bound | Kummer's theorem on carries |
+| **Formalization status** | ✓ Complete | ✗ Incomplete (has sorry) | ✗ Not attempted |
 
 ### 2. **Prime Selection vs. Digit Control**
 
-| Lean | ArXiv |
-|------|-------|
-| **Choose:** A prime $q \in (\log n, 2\log n)$ with $q > P$ | **Choose:** An integer $m$ with controlled base-$p$ digit distributions for all $p \leq 2k$ |
-| **Why it works:** $\nu_q(n!)/\nu_q(m!) \approx n / (q-1)$ forces $a + b \lesssim n + O(q)$ | **Why it works:** High digits force carries, carries bound valuations via Kummer |
-| **Implementation:** Bertrand's postulate guarantees prime existence | **Implementation:** Probabilistic method + residue-class counting bounds "bad" events |
+| Simple Lean | Google/Gemini | ArXiv |
+|------|-------|-------|
+| **Choose:** A prime $q \in (\log n, 2\log n)$ with $q > P$ | **Choose:** A prime $p > \max(P, 2)$; transform the inequality | **Choose:** An integer $m$ with controlled base-$p$ digit distributions |
+| **Why it works:** $\nu_q(n!)/\nu_q(m!) \approx n / (q-1)$ forces bound | **Why it works:** Log_bound lemma handles the nested logs; case split simplifies | **Why it works:** High digits force carries, carries bound valuations via Kummer |
+| **Implementation:** Bertrand's postulate guarantees prime existence | **Implementation:** Lemma library + case analysis | **Implementation:** Probabilistic method + residue-class counting |
 
 ### 3. **Handling Large vs. Small Primes**
 
@@ -160,17 +228,33 @@ Both proofs establish that divisibility on large primes alone suffices for the E
 
 ### 5. **Proof Length and Complexity**
 
-| Lean | ArXiv |
-|------|-------|
-| **PROOF.md:** ~200 lines (natural language) | **ArXiv:** ~100 pages (full writeup) |
-| **Lean code (est.):** 500-1000 LoC | **Lean proof (est.):** 2000-5000 LoC (probabilistic reasoning) |
-| **Dependencies:** Bertrand's postulate, Legendre, basic $p$-adic valuation | **Dependencies:** Same + Kummer, Chernoff, residue-class counting |
+| Simple Lean | Google/Gemini | ArXiv |
+|------|-------|-------|
+| **Natural Language:** ~200 lines | **Lean code:** 400+ LoC (Lemmas.lean) + 200+ LoC (Work.lean) | **ArXiv writeup:** ~100 pages |
+| **Lean code:** 500-1000 LoC (est. if completed) | **Status:** Incomplete (main theorem has sorry) | **Lean code (est.):** 2000-5000 LoC |
+| **Dependencies:** Bertrand, Legendre, basic $p$-adic valuation | **Dependencies:** Bertrand, Legendre, real logarithms, digit operations | **Dependencies:** Same + Kummer, Chernoff, residue-class counting |
+
+---
+
+## Three-Way Comparison Table
+
+| Feature | Simple Lean | Google/Gemini | ArXiv |
+|---------|-----------|----------|-------|
+| **Formalization** | ✓ Complete | ✗ Incomplete | ✗ None |
+| **Pedagogical clarity** | ★★★★★ | ★★★ | ★★ |
+| **Technical depth** | ★★ | ★★★★ | ★★★★★ |
+| **Lemma complexity** | Low | Medium | High |
+| **Case analysis** | Implicit | Explicit (2 cases) | Explicit (3 ranges for primes) |
+| **Constant explicitness** | Simple | Complex | Very complex |
+| **Probabilistic elements** | None | None | Heavy |
+| **Use of digit arithmetic** | No | Yes (formalized) | Yes (structural) |
+| **Constructiveness** | Existential | Existential | Constructive (in intervals) |
 
 ---
 
 ## Proof Steps: Side-by-Side
 
-### Lean Proof Outline
+### Simple Lean Proof Outline
 
 1. Fix $P$, let $n$ be large
 2. By Bertrand: choose prime $q$ with $\log n < q < 2\log n$ and $q > P$
@@ -179,6 +263,26 @@ Both proofs establish that divisibility on large primes alone suffices for the E
 5. Derive: $a + b \lesssim n + 2(q-1) \lesssim n + 4\log n$
 6. For small $n$: choose $C$ large enough to handle finitely many exceptions
 7. **Conclusion:** $a + b \leq n + C\log(n+2)$ ✓
+
+### Google/Gemini Proof Outline
+
+1. Fix $P$, choose prime $p > \max(P, 2)$ by Bertrand's postulate
+2. Define $K := \frac{p-1}{\log p}$ (key scaling constant)
+3. Establish log_bound lemma: Transforms $a \leq n + K \log a$ to $a \leq N + C' \log N$ for adjusted $N$
+4. **Case 1: $n < p$ (small $n$)**
+   - Show $v_p(n!) = 0$ (prime too large)
+   - From divisibility hypothesis: $v_p(a!) = v_p(b!) = 0$
+   - Conclude: $a < p$ and $b < p$, so $a + b < 2p$
+   - Bound: $a + b \leq C_{\text{small}} \log(n+2)$ where $C_{\text{small}} := \frac{2p}{\log 2}$
+5. **Case 2: $n \geq p$ (large $n$)**
+   - Use Legendre's formula: $(p-1) v_p(m!) = m - S_p(m)$ where $S_p(m)$ is base-$p$ digit sum
+   - From divisibility: $(p-1)(v_p(a!) + v_p(b!)) \leq (p-1)v_p(n!)$
+   - Rearrange: $a + b \leq n + S_p(a) + S_p(b)$
+   - Bound digit sums: $S_p(a) \leq K \log a + (p-1)$ (from $S_p(m) \leq (p-1)\log_p m + (p-1)$)
+   - Set $N := n + (p-1)$ and apply log_bound: $a \leq N + C' \log N$
+   - Similarly for $b$; combine to get $a + b \leq n + C_{\text{large}} \log(n+2)$
+6. Final constant: $C := \max(C_{\text{small}}, C_{\text{large}})$
+7. **Conclusion:** $a + b \leq n + C\log(n+2)$ ✓ (claimed; proof incomplete)
 
 ### ArXiv Proof Outline
 
@@ -207,6 +311,18 @@ The Lean proof is a **"minimal" proof** in the sense that it achieves the bound 
 
 This is elegant and formalizable, but leaves open the question: *Why does this work conceptually?* The answer is that large primes are "spread out"—there's at most a $O(\log n)$ gap between consecutive large primes—so one strategically chosen prime always encodes the full bound.
 
+### The Google/Gemini Approach: Formalization Refinement
+
+The Google/Gemini proof is a **"systematic formalization"** that:
+- Breaks the argument into cleaner cases (small vs. large $n$)
+- Introduces an auxiliary lemma (log_bound) to handle the logarithmic iteration
+- Provides detailed digit sum formalization (both integer and real versions)
+- Organizes lemmas into a library (Erdos/Lemmas.lean) for potential reuse
+
+This is intermediate: it keeps the simplicity of Legendre's formula but adds structure for formal verification. The incomplete proof (main theorem has a `sorry`) suggests that formalizing the case split and constant management is **more delicate than the informal argument suggests**, even with AI assistance.
+
+**Key insight:** Moving from natural language to formal code requires significant additional structure and bookkeeping; what seems like a "simple" proof can become complex and brittle when fully formalized.
+
 ### The ArXiv Approach: Structural Insight
 
 The ArXiv proof is **"deep" in structure**, using:
@@ -222,26 +338,33 @@ This reveals the *real reason* the bound holds: the base-$p$ representations of 
 
 ## Which Proof is "Better"?
 
-Neither is uniformly better; each excels in different contexts:
+All three have strengths and weaknesses; none is uniformly superior:
 
-### Lean Proof is Better For:
-- ✅ **Formalization** (fewer dependencies, simpler argument flow)
-- ✅ **Pedagogical clarity** (ideas are more self-evident)
-- ✅ **Integration with asymptotic analysis** (O-notation reasoning)
-- ✅ **Code conciseness** (fewer auxiliary lemmas)
+### Simple Lean Proof is Best For:
+- ✅ **Pedagogical clarity** (most direct, easiest to explain)
+- ✅ **Complete formalization** (fully verified code exists)
+- ✅ **Implementation efficiency** (fewer moving parts)
+- ✅ **Undergraduate-level understanding**
 
-### ArXiv Proof is Better For:
+### Google/Gemini Proof is Best For:
+- ✅ **Formalization scaffolding** (organized lemma library)
+- ✅ **Intermediate complexity** (between simple and deep)
+- ✅ **Case analysis clarity** (explicit small/large distinction)
+- ✅ **Studying AI-assisted proofs** (insights into LLM proof strategy)
+- ✅ **Learning formal verification challenges** (shows formalization pitfalls)
+
+### ArXiv Proof is Best For:
 - ✅ **Quantitative precision** (explicit constants and ranges)
 - ✅ **Constructiveness** (witnesses exist in known intervals)
-- ✅ **Extensions** (method applies to related divisibility problems)
-- ✅ **Theoretical insight** (reveals base-digit structure of the problem)
-- ✅ **Proving "almost all $n$" results** (not just existence)
+- ✅ **Extensions to other problems** (method applies to binomial divisibility)
+- ✅ **Theoretical insight** (reveals base-digit combinatorial structure)
+- ✅ **Research-level depth** (discovers new phenomena)
 
 ---
 
 ## Formalization Prospects
 
-### Lean Proof
+### Simple Lean Proof
 **Current Status:** ✓ Fully formalized in Lean 4 with mathlib
 
 **Why it was easier:**
@@ -252,6 +375,25 @@ Neither is uniformly better; each excels in different contexts:
 **Challenges overcome:**
 - Handling $O(\log n)$ asymptotics in formal arithmetic
 - Working with p-adic valuations on factorials
+
+---
+
+### Google/Gemini Lean Proof
+**Current Status:** ✗ Incomplete (main theorem has `sorry`)
+
+**Why formalization is harder:**
+- Requires intricate management of nested constants ($K$, $C'$, $C_{\text{small}}$, $C_{\text{large}}$, etc.)
+- log_bound lemma is non-trivial to formalize; Chernoff-style reasoning needed
+- Case split requires careful proof state management
+- Digit sum bounds exist in Mathlib but combining them is delicate
+- Small- vs. large-$n$ cases need precise interface matching
+
+**What makes it instructive:**
+- Shows that even a "minor elaboration" of a simple proof can create formalization friction
+- Demonstrates AI's limitations in completing proofs that require intricate bookkeeping
+- Library organization (Lemmas.lean) is pedagogically valuable even if proof is incomplete
+
+**Path to completion:** Likely requires manual completion of the main case split and constant tracking; the lemma library is solid.
 
 ---
 
@@ -266,31 +408,61 @@ Neither is uniformly better; each excels in different contexts:
   - Carefully coordinated quantification over finitely many primes
 - Probabilistic method is idiomatic in pure math but less idiomatic in proof assistants
 - The "existence in $[M, 2M]$" conclusion requires explicit instantiation
+- Complex interaction between prime selection, digit distributions, and bad event analysis
 
-**Feasibility:** Medium difficulty. Modern proof assistants (Lean 4, Coq) have probability libraries, but the combination with number-theoretic residue arithmetic is novel.
+**Feasibility:** Hard. Modern proof assistants (Lean 4, Coq) have probability libraries, but the combination with number-theoretic residue arithmetic is novel. Estimated effort: 5,000-10,000 LoC of proof code.
 
 ---
 
 ## Conclusion
 
-Both proofs establish the same **main theorem**, but via fundamentally different mechanisms:
+All three proofs establish the same **main theorem**, but via fundamentally different approaches:
 
-1. **Lean proof:** Exploits the **sparsity of large primes** (Bertrand) + **concentration of valuations** (Legendre)
-2. **ArXiv proof:** Exploits the **generic structure of base representations** + **carry arithmetic** (Kummer)
+1. **Simple Lean proof:** Exploits the **sparsity of large primes** (Bertrand) + **concentration of valuations** (Legendre)
+   - Status: ✓ Complete and formalized
+   - Insight: One strategically-chosen prime suffices
 
-The Lean proof is a beautiful application of classical results to yield a clean formal proof. The ArXiv proof reveals the *deeper combinatorial structure* underlying the problem and opens doors to quantitative refinements and related divisibility phenomena.
+2. **Google/Gemini proof:** Refines the Lean approach with **systematic case analysis** + **auxiliary transformations** (log_bound)
+   - Status: ✗ Incomplete (lemmas solid, main proof incomplete)
+   - Insight: Formalization requires more structure than the informal argument
 
-**Recommendation for further work:**
-- **For formalization:** Build on the Lean approach; it's already proven to be formalizable
-- **For understanding:** Study both; together they provide complementary insights into why the Erdős bound holds
-- **For extensions:** Adapt the ArXiv techniques to related problems involving binomial coefficients and factorial divisibility
+3. **ArXiv proof:** Exploits the **generic structure of base representations** + **carry arithmetic** (Kummer) + **probabilistic method**
+   - Status: ✗ Not attempted in formal proofs
+   - Insight: Deeper combinatorial structure enables constructive results
+
+**Key Takeaways:**
+
+- **Simplicity wins for formalization:** The most direct approach is easiest to verify formally
+- **Structure helps but adds complexity:** Organizing lemmas aids understanding but doesn't guarantee completion
+- **Different proofs have different purposes:** Simple proofs teach the concept; deep proofs reveal hidden structure
+- **AI-assisted proof search has limits:** Even with capable models, bridging the informal-to-formal gap remains hard
+
+**Recommendations for further work:**
+
+- **For formalization:** The simple Lean approach is the gold standard—focus here for practical verification
+- **For understanding:** Study all three; they provide complementary insights into why the Erdős bound holds
+- **For extensions:** Adapt the ArXiv techniques to related problems (binomial divisibility, other factorial inequalities)
+- **For AI + formal methods:** The Google/Gemini incomplete proof is a case study in where AI-assisted proof discovery struggles
 
 ---
 
 ## References
 
-- **Lean Proof:** `~/code/erdos-729/PROOF.md` and `Erdos/*.lean`
-- **ArXiv:** Bloom, Croot, et al. (2026). "Resolution of Erdős Problem #728." arXiv:2601.07421v5
-- **Legendre's Formula:** Any number theory text (e.g., Apostol)
-- **Kummer's Theorem:** Analytic number theory / combinatorics literature
-- **Bertrand's Postulate:** Classical result, proved by Chebyshev
+### Primary Sources
+
+- **Simple Lean Proof:** `~/code/erdos-729/PROOF.md` and `~/code/erdos-729/Erdos/*.lean`
+- **Google/Gemini Lean Proof:** `~/code/erdos-729-google/PROOF.md`, `Erdos/Lemmas.lean`, `Erdos/Work.lean`
+- **ArXiv Proof:** Bloom, Croot, et al. (2026). "Resolution of Erdős Problem #728." arXiv:2601.07421v5
+
+### Classical Results
+
+- **Legendre's Formula:** Apostol, "Introduction to Analytic Number Theory" (and any number theory textbook)
+- **Kummer's Theorem:** Kummer (1852); see also Diamond & Shurman, "A First Course in Modular Forms"
+- **Bertrand's Postulate:** Chebyshev (1852); proved in any number theory text
+- **Chernoff Bound:** Chernoff (1952); standard in probability theory texts
+
+### Related Problems
+
+- **Erdős Problem #728:** The fully divisible version (without ignoring small primes)
+- **Central Binomial Coefficient Divisibility:** Pomerance, Ford-Konyagin, Croot-Mousavi-Schmidt
+- **Factorial Inequalities:** Classical literature; recent work on p-adic valuations
